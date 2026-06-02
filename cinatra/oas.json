@@ -1,0 +1,147 @@
+{
+  "agentspec_version": "26.1.0",
+  "component_type": "Flow",
+  "id": "skill-recommender-flow",
+  "name": "Skill Recommender Agent",
+  "description": "Reviews the skills that will be applied to the drafting step and lets the user confirm before drafts are generated.",
+  "metadata": {
+    "cinatra": {
+      "type": "flow",
+      "packageName": "@cinatra-ai/skill-recommender-agent",
+      "packageVersion": "0.1.0",
+      "hitlScreens": [
+        "@cinatra-ai/skill-recommender-agent:recommend"
+      ]
+    }
+  },
+  "inputs": [
+    {
+      "title": "cinatra_run_id",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "outputs": [
+    {
+      "title": "confirmed",
+      "type": "string"
+    }
+  ],
+  "start_node": {
+    "$component_ref": "start"
+  },
+  "nodes": [
+    {
+      "$component_ref": "start"
+    },
+    {
+      "$component_ref": "recommend_gate"
+    },
+    {
+      "$component_ref": "end"
+    }
+  ],
+  "control_flow_connections": [
+    {
+      "component_type": "ControlFlowEdge",
+      "name": "start_to_recommend_gate",
+      "from_node": {
+        "$component_ref": "start"
+      },
+      "to_node": {
+        "$component_ref": "recommend_gate"
+      }
+    },
+    {
+      "component_type": "ControlFlowEdge",
+      "name": "recommend_gate_to_end",
+      "from_node": {
+        "$component_ref": "recommend_gate"
+      },
+      "to_node": {
+        "$component_ref": "end"
+      }
+    }
+  ],
+  "data_flow_connections": [
+    {
+      "component_type": "DataFlowEdge",
+      "name": "recommend_gate_to_end_confirmed",
+      "source_node": {
+        "$component_ref": "recommend_gate"
+      },
+      "source_output": "confirmed",
+      "destination_node": {
+        "$component_ref": "end"
+      },
+      "destination_input": "confirmed"
+    }
+  ],
+  "$referenced_components": {
+    "start": {
+      "component_type": "StartNode",
+      "id": "start",
+      "name": "Inputs",
+      "metadata": {
+        "cinatra": {
+          "required": [],
+          "hidden": [
+            "cinatra_run_id"
+          ]
+        }
+      },
+      "inputs": [
+        {
+          "title": "cinatra_run_id",
+          "type": "string",
+          "default": ""
+        }
+      ]
+    },
+    "recommend_gate": {
+      "component_type": "InputMessageNode",
+      "id": "recommend_gate",
+      "name": "Review skills",
+      "metadata": {
+        "cinatra": {
+          "riskClass": "read_only",
+          "requiresApproval": true,
+          "renderer": "@cinatra-ai/skill-recommender-agent:recommend",
+          "a2uiSurfaceId": "skill-recommender:recommend-gate:input",
+          "autoSkipWhenInputsPresent": false,
+          "description": "Review the skills that will guide the email drafting step.",
+          "inputMessageSchema": {
+            "type": "object",
+            "x-renderer": "@cinatra-ai/skill-recommender-agent:recommend",
+            "properties": {
+              "confirmed": {
+                "type": "boolean",
+                "title": "Confirmed"
+              }
+            },
+            "required": [
+              "confirmed"
+            ]
+          }
+        }
+      },
+      "outputs": [
+        {
+          "title": "confirmed",
+          "type": "string"
+        }
+      ]
+    },
+    "end": {
+      "component_type": "EndNode",
+      "id": "end",
+      "name": "End",
+      "outputs": [
+        {
+          "title": "confirmed",
+          "type": "string"
+        }
+      ]
+    }
+  }
+}
