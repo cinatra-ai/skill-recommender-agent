@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build output (tsconfig outDir)
+dist/
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
