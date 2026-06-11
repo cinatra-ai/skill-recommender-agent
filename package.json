@@ -4,6 +4,9 @@
   "license": "Apache-2.0",
   "description": "Reviews the skills assigned to the drafting step and lets the user confirm before drafts are generated.",
   "type": "module",
+  "files": [
+    "cinatra"
+  ],
   "cinatra": {
     "apiVersion": "cinatra.ai/v1",
     "kind": "agent",
