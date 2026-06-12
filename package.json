@@ -10,6 +10,16 @@
   "cinatra": {
     "apiVersion": "cinatra.ai/v1",
     "kind": "agent",
-    "dependencies": []
+    "dependencies": [],
+    "fieldRenderers": [
+      {
+        "id": "@cinatra-ai/skill-recommender-agent:recommend",
+        "kind": "skill-recommend",
+        "priority": 60,
+        "params": {
+          "skillsTargetPackage": "@cinatra-ai/email-drafting-agent"
+        }
+      }
+    ]
   }
 }
