@@ -8,7 +8,6 @@
     "cinatra": {
       "type": "flow",
       "packageName": "@cinatra-ai/skill-recommender-agent",
-      "packageVersion": "0.1.0",
       "hitlScreens": [
         "@cinatra-ai/skill-recommender-agent:recommend"
       ]
