@@ -20,6 +20,7 @@
           "skillsTargetPackage": "@cinatra-ai/email-drafting-agent"
         }
       }
-    ]
+    ],
+    "consumes": []
   }
 }
