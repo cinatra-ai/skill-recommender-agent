@@ -10,6 +10,7 @@
   "cinatra": {
     "apiVersion": "cinatra.ai/v1",
     "kind": "agent",
+    "displayName": "Skill Recommender Agent",
     "dependencies": [],
     "fieldRenderers": [
       {
@@ -21,6 +22,15 @@
         }
       }
     ],
-    "consumes": []
+    "consumes": [],
+    "packageType": "agent",
+    "manifestVersion": 1,
+    "sourceTemplateId": "skill-recommender-flow",
+    "sourceVersionId": "1d811604-58a4-4658-a73a-37c5baca8681",
+    "sourceVersionNumber": 1,
+    "riskLevel": "low",
+    "hasApprovalGates": true,
+    "toolAccess": [],
+    "ownerOrgId": null
   }
 }
