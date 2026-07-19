@@ -34,6 +34,9 @@
       "$component_ref": "start"
     },
     {
+      "$component_ref": "prep_skills"
+    },
+    {
       "$component_ref": "recommend_gate"
     },
     {
@@ -43,9 +46,19 @@
   "control_flow_connections": [
     {
       "component_type": "ControlFlowEdge",
-      "name": "start_to_recommend_gate",
+      "name": "start_to_prep_skills",
       "from_node": {
         "$component_ref": "start"
+      },
+      "to_node": {
+        "$component_ref": "prep_skills"
+      }
+    },
+    {
+      "component_type": "ControlFlowEdge",
+      "name": "prep_skills_to_recommend_gate",
+      "from_node": {
+        "$component_ref": "prep_skills"
       },
       "to_node": {
         "$component_ref": "recommend_gate"
@@ -63,6 +76,30 @@
     }
   ],
   "data_flow_connections": [
+    {
+      "component_type": "DataFlowEdge",
+      "name": "start_cinatra_run_id_to_prep_skills_agent_run_id",
+      "source_node": {
+        "$component_ref": "start"
+      },
+      "source_output": "cinatra_run_id",
+      "destination_node": {
+        "$component_ref": "prep_skills"
+      },
+      "destination_input": "agent_run_id"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "prep_skills_skillIds_to_recommend_gate_skillIds",
+      "source_node": {
+        "$component_ref": "prep_skills"
+      },
+      "source_output": "skillIds",
+      "destination_node": {
+        "$component_ref": "recommend_gate"
+      },
+      "destination_input": "skillIds"
+    },
     {
       "component_type": "DataFlowEdge",
       "name": "recommend_gate_to_end_confirmed",
@@ -97,6 +134,47 @@
         }
       ]
     },
+    "prep_skills": {
+      "component_type": "ApiNode",
+      "id": "prep_skills",
+      "name": "Resolve drafting skills",
+      "url": "{{CINATRA_BASE_URL}}/api/agents/passthrough",
+      "http_method": "POST",
+      "data": {
+        "tool": "skills_installed_resolve_for_agent",
+        "input": {
+          "agentId": "@cinatra-ai/email-drafting-agent"
+        },
+        "agent_run_id": "{{ agent_run_id }}"
+      },
+      "inputs": [
+        {
+          "title": "agent_run_id",
+          "type": "string",
+          "default": ""
+        }
+      ],
+      "outputs": [
+        {
+          "title": "skillIds",
+          "type": "array",
+          "json_schema": {
+            "items": {
+              "type": "string"
+            }
+          },
+          "default": []
+        }
+      ],
+      "metadata": {
+        "cinatra": {
+          "riskClass": "read_only",
+          "requiresApproval": false,
+          "packageName": "@cinatra-ai/skill-recommender-agent",
+          "description": "Deterministic pre-interrupt data prep (cinatra#1625, enablement #1794). Resolves the skill ids assigned to the drafting agent through the /api/agents/passthrough seam (skills_installed_resolve_for_agent), binding the run + actor route-side from the executing run — never trusting caller input. The resolved skillIds ride a DataFlowEdge into the review gate so the renderer displays an authorized snapshot instead of calling an authenticated host action. The target drafting package is extension-owned workflow config."
+        }
+      }
+    },
     "recommend_gate": {
       "component_type": "InputMessageNode",
       "id": "recommend_gate",
@@ -124,6 +202,18 @@
           }
         }
       },
+      "inputs": [
+        {
+          "title": "skillIds",
+          "type": "array",
+          "json_schema": {
+            "items": {
+              "type": "string"
+            }
+          },
+          "default": []
+        }
+      ],
       "outputs": [
         {
           "title": "confirmed",

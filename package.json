@@ -5,8 +5,29 @@
   "description": "Reviews the skills assigned to the drafting step and lets the user confirm before drafts are generated.",
   "type": "module",
   "files": [
+    "src",
+    "!src/__tests__",
     "cinatra"
   ],
+  "scripts": {
+    "test": "vitest"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "radix-ui": "^1.6.0",
+    "tailwind-merge": "^3.6.0"
+  },
+  "peerDependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "@cinatra-ai/sdk-ui": "*"
+  },
+  "peerDependenciesMeta": {
+    "@cinatra-ai/sdk-ui": {
+      "optional": true
+    }
+  },
   "cinatra": {
     "apiVersion": "cinatra.ai/v1",
     "kind": "agent",
@@ -17,12 +38,18 @@
         "id": "@cinatra-ai/skill-recommender-agent:recommend",
         "kind": "skill-recommend",
         "priority": 60,
-        "params": {
-          "skillsTargetPackage": "@cinatra-ai/email-drafting-agent"
+        "component": {
+          "entry": "./src/skill-recommender-renderer.tsx",
+          "propsApiVersion": 1
         }
       }
     ],
-    "consumes": [],
+    "consumes": [
+      {
+        "primitive": "skills_installed_resolve_for_agent",
+        "requirement": "required"
+      }
+    ],
     "packageType": "agent",
     "manifestVersion": 1,
     "sourceTemplateId": "skill-recommender-flow",
